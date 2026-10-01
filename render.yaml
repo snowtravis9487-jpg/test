@@ -1,0 +1,23 @@
+# Render blueprint: one free web service running the API and the built frontend.
+services:
+  - type: web
+    name: leave-app
+    runtime: node
+    plan: free
+    region: singapore
+    # Render installs with NODE_ENV=production, which would skip Vite.
+    buildCommand: npm install --include=dev && npm run build
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_VERSION
+        value: 22
+      # "Today" (used for cancellation rules) follows this timezone.
+      - key: TZ
+        value: Asia/Kuala_Lumpur
+      - key: TRUST_PROXY
+        value: 1
+      - key: DATABASE_URL
+        sync: false # asked for when the blueprint is created
+      - key: ADMIN_PASSWORD
+        sync: false
